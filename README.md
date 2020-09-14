@@ -1,7 +1,4 @@
-# redmatic-RAM-Limit-Subflow
-
----
-## Redmatic Ramlimit ändern
+# Redmatic Ramlimit ändern
 
 `Version 0.2.0`
 
@@ -25,7 +22,7 @@ https://github.com/Matten-Matten/redmatic-RAM-Limit-Subflow/blob/master/Subflow
 ## Wert schreiben
 `msg.topic = "set_limit"`
 
-`msg.payload = 300 (Zahl)`
+`msg.payload = 250-1500 (Zahl)`
 
 
 ---
