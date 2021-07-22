@@ -3,7 +3,7 @@
         "id": "64cc7bda.c3b164",
         "type": "subflow",
         "name": "RAM Limit",
-        "info": "---\n# Redmatic Ramlimit ändern\n\n`Version 0.2.0`\n\n---\n# Wert holen\n`msg.topic = \"read_limit\"`\n\n`msg.payload = egal`\n\n\n---\n\n# Wert schreiben\n`msg.topic = \"set_limit\"`\n\n`msg.payload = 300 (Zahl)`\n\n\n---\n# monit reload\n`msg.topic = \"monit_reload\"`\n\n`msg.payload = egal`\n\n---\n\n_by Matten Matten_",
+        "info": "![Logo](https://avatars2.githubusercontent.com/u/45239779?s=80&v=4)\n\n---\n# Redmatic Ramlimit ändern\n\n`Version 1.0.0`\n\n---\n# Wert holen\n`msg.topic = \"read_limit\"`\n\n`msg.payload = egal`\n\n\n---\n\n# Wert schreiben\n`msg.topic = \"set_limit\"`\n\n`msg.payload = 250-1500 (Zahl)`\n\n\n---\n# monit reload\n`msg.topic = \"monit_reload\"`\n\n`msg.payload = egal`\n\n---\n\n_by Matten Matten_",
         "category": "redmatic",
         "in": [
             {
@@ -25,7 +25,7 @@
                 "ui": {
                     "icon": "font-awesome/fa-home",
                     "label": {
-                        "en-US": "Version: 0.2.0"
+                        "en-US": "Version: 1.0.0"
                     },
                     "type": "none"
                 }
@@ -181,11 +181,12 @@
         "chunk": false,
         "sendError": false,
         "encoding": "none",
-        "x": 580,
+        "x": 480,
         "y": 300,
         "wires": [
             [
-                "f0c18e03.c5de4"
+                "f0c18e03.c5de4",
+                "8f37936c.4ff16"
             ]
         ]
     },
@@ -247,13 +248,14 @@
         "id": "f0c18e03.c5de4",
         "type": "function",
         "z": "64cc7bda.c3b164",
-        "name": "",
+        "d": true,
+        "name": "split",
         "func": "msg.payload = msg.payload.split(\"\\n\");\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 300,
+        "x": 270,
         "y": 260,
         "wires": [
             [
@@ -265,6 +267,7 @@
         "id": "177a0ece.846b21",
         "type": "switch",
         "z": "64cc7bda.c3b164",
+        "d": true,
         "name": "if memory usage",
         "property": "payload[9]",
         "propertyType": "msg",
@@ -278,7 +281,7 @@
         "checkall": "false",
         "repair": false,
         "outputs": 1,
-        "x": 510,
+        "x": 420,
         "y": 260,
         "wires": [
             [
@@ -290,13 +293,14 @@
         "id": "f9b0ca3c.1cc188",
         "type": "function",
         "z": "64cc7bda.c3b164",
+        "d": true,
         "name": "read RAM",
         "func": "var antwort = msg.payload[9];\n\nvar RAM = antwort.slice(((antwort.indexOf('> ') + 3) - 1), antwort.lastIndexOf(' MB'));\nmsg.payload = parseFloat(RAM);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 680,
+        "x": 580,
         "y": 260,
         "wires": [
             [
@@ -554,7 +558,7 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 990,
+        "x": 1010,
         "y": 300,
         "wires": [
             [
@@ -570,7 +574,7 @@
         "links": [
             "c866a685.58e9a8"
         ],
-        "x": 1095,
+        "x": 1115,
         "y": 300,
         "wires": []
     },
@@ -607,7 +611,7 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": false,
-        "x": 870,
+        "x": 890,
         "y": 300,
         "wires": [
             [
@@ -708,7 +712,7 @@
         "checkall": "false",
         "repair": false,
         "outputs": 1,
-        "x": 910,
+        "x": 890,
         "y": 260,
         "wires": [
             [
@@ -1141,122 +1145,38 @@
         "wires": []
     },
     {
-        "id": "8f8fb1f8.3035b",
+        "id": "8f37936c.4ff16",
+        "type": "function",
+        "z": "64cc7bda.c3b164",
+        "name": "suche",
+        "func": "var meinArray = msg.payload.split(\"\\n\");\n\n//node.warn(msg.payload)\n//node.warn(liste)\n//node.warn(meinArray.length)\n\nfor (var i = 0; i < meinArray.length; i++) {\n        if ( meinArray[i].indexOf(\"if memory usage\") != -1 && meinArray[i].indexOf(\" MB\") != -1) {\n            var RAM = meinArray[i].slice(((meinArray[i].indexOf('> ') + 3) - 1), meinArray[i].lastIndexOf(' MB'));\n            msg.payload = parseFloat(RAM);\n            return msg; \n        }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 730,
+        "y": 300,
+        "wires": [
+            [
+                "cabea144.d219d8",
+                "acbfc0c6.219ac"
+            ]
+        ]
+    },
+    {
+        "id": "a1562c4f.d7c84",
         "type": "subflow:64cc7bda.c3b164",
         "z": "e053d1f8.10c2a",
         "name": "",
         "env": [
             {
                 "name": "LIMIT",
-                "value": "550",
+                "value": "600",
                 "type": "num"
             }
         ],
-        "x": 550,
-        "y": 3800,
+        "x": 430,
+        "y": 3460,
         "wires": []
-    },
-    {
-        "id": "8e77a569.45fec8",
-        "type": "inject",
-        "z": "e053d1f8.10c2a",
-        "name": "read_limit",
-        "props": [
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "read_limit",
-        "payloadType": "str",
-        "x": 320,
-        "y": 3740,
-        "wires": [
-            [
-                "8f8fb1f8.3035b"
-            ]
-        ]
-    },
-    {
-        "id": "ad962959.2ee408",
-        "type": "inject",
-        "z": "e053d1f8.10c2a",
-        "name": "set_limit 500",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "set_limit",
-        "payload": "500",
-        "payloadType": "num",
-        "x": 310,
-        "y": 3860,
-        "wires": [
-            [
-                "8f8fb1f8.3035b"
-            ]
-        ]
-    },
-    {
-        "id": "26a1640b.5b525c",
-        "type": "inject",
-        "z": "e053d1f8.10c2a",
-        "name": "set_limit aus config",
-        "props": [
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "set_limit",
-        "payloadType": "str",
-        "x": 290,
-        "y": 3820,
-        "wires": [
-            [
-                "8f8fb1f8.3035b"
-            ]
-        ]
-    },
-    {
-        "id": "3b37aea9.08e8f2",
-        "type": "inject",
-        "z": "e053d1f8.10c2a",
-        "name": "monit_reload",
-        "props": [
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "monit_reload",
-        "x": 310,
-        "y": 3780,
-        "wires": [
-            [
-                "8f8fb1f8.3035b"
-            ]
-        ]
     }
 ]
